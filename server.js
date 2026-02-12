@@ -60,6 +60,30 @@ async function connectToMongoDB()
 
 connectToMongoDB();
 
+// Root route - API information
+app.get('/', (req, res) => {
+    res.json({ 
+        message: 'User Management API is running',
+        version: '1.0.0',
+        endpoints: {
+            authentication: {
+                signup: { method: 'POST', path: '/signup', description: 'Register new user' },
+                login: { method: 'POST', path: '/login', description: 'Login and get token' },
+                logout: { method: 'POST', path: '/logout', description: 'Logout and invalidate token', auth: 'required' }
+            },
+            user: {
+                profile: { method: 'GET', path: '/profile', description: 'Get user profile', auth: 'required' }
+            },
+            admin: {
+                list_users: { method: 'GET', path: '/admin/users', description: 'List all users', auth: 'admin required' },
+                delete_user: { method: 'DELETE', path: '/admin/users/:id', description: 'Delete user by ID', auth: 'admin required' },
+                update_role: { method: 'PATCH', path: '/admin/users/:id/role', description: 'Update user role', auth: 'admin required' }
+            }
+        },
+        documentation: 'Use appropriate HTTP methods and include Authorization header with Bearer token for protected routes'
+    });
+});
+
 function authenticateToken(req, res, next) 
 {
     const authHeader = req.headers['authorization'];
